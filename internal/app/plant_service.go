@@ -11,6 +11,8 @@ type PlantService interface {
 	Save(p domain.Plant) (domain.Plant, error)
 	GetForUser(uId uint64) ([]domain.Plant, error)
 	Find(id uint64) (interface{}, error)
+	Update(p domain.Plant) (domain.Plant, error)
+	Delete(id uint64) error
 }
 
 type plantService struct {
@@ -48,4 +50,22 @@ func (s plantService) Find(id uint64) (interface{}, error) {
 		return domain.Plant{}, err
 	}
 	return plant, nil
+}
+
+func (s plantService) Update(p domain.Plant) (domain.Plant, error) {
+	plant, err := s.plantRepo.Update(p)
+	if err != nil {
+		log.Printf("PlantService -> Update: %s", err)
+		return domain.Plant{}, err
+	}
+	return plant, nil
+}
+
+func (s plantService) Delete(id uint64) error {
+	err := s.plantRepo.Delete(id)
+	if err != nil {
+		log.Printf("PlantService -> Delete: %s", err)
+		return err
+	}
+	return nil
 }
